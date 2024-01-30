@@ -29,11 +29,26 @@ export default function Card() {
         color: "white"
 
     }
+    let markdone = (id) => {
+        setTodos((prevTask) =>
+            prevTask.map((todo) => {
+                if (todo.id == id) {
+                    // Add strikethrough class to mark as done
+                    return {
+                        ...todo,
+                        isdone: true,  // Add a flag to track completion
+                    };
+                } else {
+                    return todo;
+                }
+            })
+        );
+    };
 
-    let [todos, setTodos] = useState([{ Task: "Today's task", id: uuidv4() }]);
+    let [todos, setTodos] = useState([{ Task: "Today's task", id: uuidv4(), isdone: false }]);
     let [newtodo, setnewtodo] = useState([""]);
     let AddNewTask = () => {
-        setTodos([...todos, { Task: newtodo, id: uuidv4() }]);
+        setTodos([...todos, { Task: newtodo, id: uuidv4(), isdone: false }]);
         setnewtodo(" ");
     };
     let updateTodo = (event) => {
@@ -49,19 +64,32 @@ export default function Card() {
 
 
     }
+    let deleteTask = (id) => {
+        setTodos(todos.filter((todo) => todo.id != id));
+
+    };
+
 
     return (
         <div style={style}>
             <h1>To do List</h1>
-            <input style={style3} placeholder="New Task" type="text" value={newtodo} onChange={updateTodo} />
-            <button style={btn1} onClick={AddNewTask}>Add Task</button>
+            <input style={style3} class="btn" placeholder="Add task" type="text" value={newtodo} onChange={updateTodo} />
+            <button style={btn1} class="btn" onClick={AddNewTask}>Add Task</button>
 
             <div style={div2}>
 
                 <h3>
                     <ul>
                         {todos.map((todo) => {
-                            return <li key={todo.id}> {todo.Task} </li>
+                            return <li key={todo.id}>
+                                <span style={todo.isdone ? { textDecorationLine: "line-through" } : {}}>{todo.Task} </span>
+                                &nbsp;  &nbsp;   &nbsp;   &nbsp;
+
+                                <button class="btn" onClick={() => deleteTask(todo.id)} type="">Delete</button>
+                                &nbsp;  &nbsp;   &nbsp;   &nbsp;
+                                <button onClick={() => markdone(todo.id)}>Mark as Done</button>
+                            </li>
+
                         })}
                     </ul>
 
